@@ -145,6 +145,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "app-requests"
+    }
+  },
+  "defaultProject": "app-requests",
+  "cli": {
+    "analytics": false
+  }
 }
