@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Item } from './item';
 
@@ -21,7 +21,22 @@ export class RequestsComponent implements OnInit {
   }
 
   getData(): void {
-    this.http.get<Item[]>(url).subscribe(
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    let params = new HttpParams();
+
+    // site/items?id=12&name=Tom
+    if (this.item.id) {
+      // site/items?id=12
+      params = params.set('id', this.item.id + '');
+    }
+    if (this.item.name) {
+      // site/items?name=Tom
+      params = params.set('name', this.item.name);
+    }
+
+    const options = {headers, params};
+
+    this.http.get<Item[]>(url, options).subscribe(
       result => this.items = result,
       error => console.log(error.statusText)
     );
@@ -36,10 +51,11 @@ export class RequestsComponent implements OnInit {
       return false;
     }
 
-    this.http.post<Item>(url, {
-      id: this.item.id,
-      name: this.item.name
-    }).subscribe(
+    const data = { id: this.item.id, name: this.item.name };
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const option = { headers };
+
+    this.http.post<Item>(url, data, option).subscribe(
       result => this.items.push(result),
       error => console.log(error.statusText)
     );
